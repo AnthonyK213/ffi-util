@@ -1,4 +1,4 @@
-local ffi_util_func = {}
+local util = {}
 
 ---
 ---@generic T
@@ -6,7 +6,7 @@ local ffi_util_func = {}
 ---@return integer
 ---@return integer
 ---@return T[]
-function ffi_util_func.flatten_array2(array2)
+function util.flatten_array2(array2)
   if #array2 == 0 then
     return 0, 0, {}
   end
@@ -31,7 +31,7 @@ end
 ---
 ---@param object any
 ---@return ffi.cdata*
-function ffi_util_func.get_ffi_type(object)
+function util.get_ffi_type(object)
   if type(object) == "table" then
     return object.m_type
   elseif type(object) == "string" then
@@ -44,7 +44,7 @@ end
 ---
 ---@param object any
 ---@return any
-function ffi_util_func.get_ffi_data(object)
+function util.get_ffi_data(object)
   if type(object) == "table" then
     return object:data()
   else
@@ -52,4 +52,4 @@ function ffi_util_func.get_ffi_data(object)
   end
 end
 
-return ffi_util_func
+return util

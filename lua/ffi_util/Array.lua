@@ -1,5 +1,5 @@
 local ffi = require("ffi")
-local ffi_util_func = require("ffi_util_func")
+local util = require("ffi_util.util")
 
 ---
 ---@class ffi_util.Array<T>
@@ -19,9 +19,9 @@ Array.__index = Array
 ---@return ffi_util.Array
 function Array:new(list, low)
   local size = #list
-  local handle = ffi.new(ffi.typeof(ffi_util_func.get_ffi_type(self.m_type) .. "[?]"), size)
+  local handle = ffi.new(ffi.typeof(util.get_ffi_type(self.m_type) .. "[?]"), size)
   for i = 1, size do
-    handle[i - 1] = ffi_util_func.get_ffi_data(list[i])
+    handle[i - 1] = util.get_ffi_data(list[i])
   end
   return self:take(handle, size, { low = low })
 end
