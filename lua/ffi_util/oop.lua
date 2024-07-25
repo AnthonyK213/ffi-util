@@ -5,14 +5,16 @@ local oop = {}
 ---
 ---@generic T
 ---@param ffi_type string
----@param ctor? fun(o:T,...):T
+---@param options? {ctor:(fun(o:T,...):T),dtor:(fun(h:ffi.cdata*))}
 ---@return table
-function oop.def_class(ffi_type, ctor)
+function oop.def_class(ffi_type, options)
+  options = options or {}
   local class = {}
   class.__index = class
   class.m_type = ffi_type
+  class.m_dtor = options.dtor
   setmetatable(class, {
-    __call = ctor or function(o)
+    __call = options.ctor or function(o)
       local handle = ffi.new(oop.get_type(o))
       return oop.take(o, handle)
     end
@@ -42,10 +44,17 @@ function oop.set_field(data, field, value)
 end
 
 ---
----@param Tp_ any
+---@param Tp_ table
 ---@param handle ffi.cdata*
+---@param is_owner? boolean
 ---@return any
-function oop.take(Tp_, handle)
+function oop.take(Tp_, handle, is_owner)
+  if handle and is_owner then
+    local dtor = oop.get_dtor(Tp_)
+    if dtor then
+      handle = ffi.gc(handle, dtor)
+    end
+  end
   local o = { m_data = handle }
   setmetatable(o, Tp_)
   return o
@@ -72,6 +81,17 @@ function oop.get_data(object)
     return object.m_data
   else
     return object
+  end
+end
+
+---
+---@param object any
+---@return fun(handle:ffi.cdata*)|nil
+function oop.get_dtor(object)
+  if type(object) == "table" then
+    return object.m_dtor
+  else
+    return nil
   end
 end
 
