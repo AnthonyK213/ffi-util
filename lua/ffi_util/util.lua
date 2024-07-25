@@ -46,10 +46,49 @@ end
 ---@return any
 function util.get_ffi_data(object)
   if type(object) == "table" then
-    return object:data()
+    return object.m_data
   else
     return object
   end
+end
+
+---
+---@param data ffi.cdata*
+---@param field string
+---@param Tp_ table?
+---@return any
+function util.get_field(data, field, Tp_)
+  if type(Tp_) == "table" then
+    return Tp_:take(data[field])
+  else
+    return data[field]
+  end
+end
+
+---
+---@param data ffi.cdata*
+---@param field string
+---@param value any
+function util.set_field(data, field, value)
+  data[field] = util.get_ffi_data(value)
+end
+
+---
+---@param Tp_ any
+function util.def_ctor(Tp_)
+  setmetatable(Tp_, {
+    __call = function(o, ...) return o:new(...) end
+  })
+end
+
+---
+---@param Tp_ any
+---@param handle ffi.cdata*
+---@return any
+function util.take(Tp_, handle)
+  local o = { m_data = handle }
+  setmetatable(o, Tp_)
+  return o
 end
 
 return util

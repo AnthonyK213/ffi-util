@@ -4,7 +4,7 @@ local util = require("ffi_util.util")
 ---
 ---@class ffi_util.Array<T>
 ---@field private m_type any
----@field private m_h ffi.cdata*
+---@field private m_data ffi.cdata*
 ---@field private m_size integer
 ---@field private m_low integer
 local Array = {}
@@ -38,7 +38,7 @@ function Array:take(handle, size, options)
     handle = ffi.gc(handle, options.free)
   end
   local arr = {
-    m_h = handle,
+    m_data = handle,
     m_size = size,
     m_low = options.low or 1,
   }
@@ -67,7 +67,16 @@ end
 ---
 ---@return ffi.cdata*
 function Array:data()
-  return self.m_h
+  return self.m_data
+end
+
+---
+---@private
+---@param index integer
+function Array:check_index(index)
+  if index < self:lower() or index > self:upper() then
+    error("Out of range")
+  end
 end
 
 ---
@@ -75,14 +84,21 @@ end
 ---@param index integer
 ---@return T
 function Array:value(index)
-  if index < self:lower() or index > self:upper() then
-    error("Out of range")
-  end
+  self:check_index(index)
   if type(self.m_type) == "table" then
-    return self.m_type.take(self.m_h[index - self.m_low])
+    return self.m_type:take(self.m_data[index - self.m_low])
   else
-    return self.m_h[index - self.m_low]
+    return self.m_data[index - self.m_low]
   end
+end
+
+---
+---@generic T
+---@param index integer
+---@param value T
+function Array:set_value(index, value)
+  self:check_index(index)
+  self.m_data[index - self.m_low] = util.get_ffi_data(value)
 end
 
 ---
