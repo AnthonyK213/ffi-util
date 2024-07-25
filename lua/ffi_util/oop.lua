@@ -1,24 +1,23 @@
+local ffi = require("ffi")
+
 local oop = {}
 
 ---
 ---@generic T
 ---@param ffi_type string
----@param ctor fun(o:T,...):T
+---@param ctor? fun(o:T,...):T
 ---@return table
 function oop.def_class(ffi_type, ctor)
   local class = {}
   class.__index = class
   class.m_type = ffi_type
-  setmetatable(class, { __call = ctor })
-  return class
-end
-
----
----@param Tp_ any
-function oop.def_ctor(Tp_)
-  setmetatable(Tp_, {
-    __call = function(o, ...) return o:new(...) end
+  setmetatable(class, {
+    __call = ctor or function(o)
+      local handle = ffi.new(oop.get_type(o))
+      return oop.take(o, handle)
+    end
   })
+  return class
 end
 
 ---
