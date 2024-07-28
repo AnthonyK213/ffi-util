@@ -16,7 +16,7 @@ function oop.def_class(ffi_type, options)
   setmetatable(class, {
     __call = options.ctor or function(o)
       local handle = ffi.new(oop.get_type(o))
-      return oop.take(o, handle)
+      return oop.take(o, handle, type(o.m_dtor) == "function")
     end
   })
   return class
