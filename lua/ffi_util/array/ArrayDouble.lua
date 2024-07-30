@@ -4,6 +4,6 @@ local Array = require("ffi_util.array.Array")
 ---@field new fun(self:ffi_util.array.ArrayDouble,list:number[],low?:integer):ffi_util.array.ArrayDouble
 ---@field value fun(self:ffi_util.array.ArrayDouble,index:integer):number
 ---@field set_value fun(self:ffi_util.array.ArrayDouble,index:integer,value:number)
-local ArrayDouble = Array.instantiate("int")
+local ArrayDouble = Array.instantiate("double")
 
 return ArrayDouble
