@@ -23,6 +23,16 @@ function oop.def_class(ffi_type, options)
 end
 
 ---
+---@param init_table table
+---@return function
+function oop.def_ctor(init_table)
+  return function(o)
+    local handle = ffi.new(oop.get_type(o), init_table)
+    return oop.take(o, handle, type(o.m_dtor) == "function")
+  end
+end
+
+---
 ---@param data ffi.cdata*
 ---@param field string
 ---@param Tp_ table?
