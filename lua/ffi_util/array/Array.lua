@@ -11,6 +11,7 @@ local Array = {}
 
 ---@private
 Array.__index = Array
+Array.__metatable = false
 
 ---Constructor.
 ---@generic T
@@ -107,6 +108,7 @@ function Array.instantiate(type_)
   local arr = { m_type = type_ }
   setmetatable(arr, Array)
   arr.__index = arr
+  arr.__metatable = false
   return arr
 end
 

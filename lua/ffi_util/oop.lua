@@ -11,13 +11,17 @@ function oop.def_class(ffi_type, options)
   options = options or {}
   local class = {}
   class.__index = class
-  class.m_type = ffi_type
-  class.m_dtor = options.dtor
+  class.__metatable = false
   setmetatable(class, {
+    __index = {
+      m_type = ffi_type,
+      m_dtor = options.dtor,
+    },
     __call = options.ctor or function(o)
       local handle = ffi.new(oop.get_type(o))
       return oop.take(o, handle, type(o.m_dtor) == "function")
-    end
+    end,
+    __metatable = false,
   })
   return class
 end
@@ -103,6 +107,19 @@ function oop.get_dtor(object)
   else
     return nil
   end
+end
+
+---@generic T
+---@param tbl T
+---@return T
+function oop.make_readonly(tbl)
+  return setmetatable({}, {
+    __index = tbl,
+    __newindex = function(o, k, v)
+      error("Attempt to modify read-only structure!")
+    end,
+    __metatable = false,
+  })
 end
 
 return oop
