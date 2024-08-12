@@ -122,4 +122,4 @@ function oop.make_readonly(tbl)
   })
 end
 
-return oop
+return oop.make_readonly(oop)

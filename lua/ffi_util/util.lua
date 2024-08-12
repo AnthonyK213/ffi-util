@@ -28,4 +28,4 @@ function util.flatten_array2(array2)
   return n_u, n_v, result
 end
 
-return util
+return require("ffi_util.oop").make_readonly(util)
