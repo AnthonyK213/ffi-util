@@ -93,6 +93,10 @@ end
 function oop.get_data(object)
   if type(object) == "table" then
     return object.m_data
+  elseif type(object) == "string" then
+    local result = ffi.new("char[?]", #string + 1)
+    ffi.copy(result, object)
+    return result
   else
     return object
   end
