@@ -2,7 +2,7 @@ local ffi = require("ffi")
 
 local oop = {}
 
----
+---Define a wrapper class for ffi cdata.
 ---@generic T
 ---@param ffi_type string
 ---@param options? {ctor:(fun(o:T,...):T),dtor:(fun(h:ffi.cdata*))}
@@ -26,7 +26,7 @@ function oop.def_class(ffi_type, options)
   return class
 end
 
----
+---Define a default constructor from an initialization table.
 ---@param init_table table
 ---@return function
 function oop.def_ctor(init_table)
@@ -94,7 +94,7 @@ function oop.get_data(object)
   if type(object) == "table" then
     return object.m_data
   elseif type(object) == "string" then
-    local result = ffi.new("char[?]", #string + 1)
+    local result = ffi.new("char[?]", #object + 1)
     ffi.copy(result, object)
     return result
   else
