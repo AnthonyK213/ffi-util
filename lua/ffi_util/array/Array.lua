@@ -1,5 +1,6 @@
 local ffi = require("ffi")
 local oop = require("ffi_util.oop")
+local util = require("ffi_util.util")
 
 ---
 ---@class ffi_util.array.Array<T>
@@ -15,15 +16,27 @@ Array.__metatable = false
 
 ---Constructor.
 ---@generic T
----@param list T[]
+---@param list T[]|ffi_util.array.Array<T>
 ---@param low? integer
----@return ffi_util.array.Array
+---@return ffi_util.array.Array<T>
 function Array:new(list, low)
-  local size = #list
-  local handle = ffi.new(ffi.typeof(oop.get_type(self.m_type) .. "[?]"), size)
-  for i = 1, size do
-    handle[i - 1] = oop.get_data(list[i])
+  local size, handle
+
+  if util.is_array1(list) then
+    size = #list
+    handle = ffi.new(ffi.typeof(oop.get_type(self.m_type) .. "[?]"), size)
+    for i = 1, size do
+      handle[i - 1] = oop.get_data(list[i])
+    end
+  elseif list.m_type == self.m_type then
+    ---@cast list ffi_util.array.Array
+    size = list:size()
+    handle = list:data()
+  else
+    size = 0
+    handle = nil
   end
+
   return self:take(handle, size, { low = low })
 end
 

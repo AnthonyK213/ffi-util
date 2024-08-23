@@ -1,5 +1,28 @@
 local util = {}
 
+---Test if `t` is a table indexed only by contiguous integers starting from 1.
+---@param t table
+---@return boolean
+function util.is_array1(t)
+  if type(t) ~= "table" then
+    return false
+  end
+
+  if next(t) == nil then
+    return getmetatable(t) == nil
+  end
+
+  local j = 1
+  for _ in pairs(t) do
+    if t[j] == nil then
+      return false
+    end
+    j = j + 1
+  end
+
+  return true
+end
+
 ---
 ---@generic T
 ---@param array2 T[][]
