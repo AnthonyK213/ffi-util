@@ -39,7 +39,7 @@ end
 ---
 ---@param data ffi.cdata*
 ---@param field string
----@param Tp_ table?
+---@param Tp_? any
 ---@return any
 function oop.get_field(data, field, Tp_)
   if type(Tp_) == "table" then
@@ -58,7 +58,7 @@ function oop.set_field(data, field, value)
 end
 
 ---
----@param Tp_ table
+---@param Tp_ any
 ---@param handle ffi.cdata*
 ---@param is_owner? boolean
 ---@return any

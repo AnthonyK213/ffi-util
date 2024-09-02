@@ -116,7 +116,9 @@ function Array:set_value(index, value)
 end
 
 ---
----@param type_ table|string
+---@generic T
+---@param type_ T
+---@return ffi_util.array.Array<T>
 function Array.instantiate(type_)
   local arr = { m_type = type_ }
   setmetatable(arr, Array)
