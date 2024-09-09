@@ -44,6 +44,8 @@ end
 function oop.get_field(data, field, Tp_)
   if type(Tp_) == "table" then
     return oop.take(Tp_, data[field])
+  elseif type(Tp_) == "string" then
+    return ffi.string(data[field])
   else
     return data[field]
   end
