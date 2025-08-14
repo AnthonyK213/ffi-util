@@ -19,7 +19,7 @@ function oop.def_class(ffi_type, options)
     },
     __call = options.ctor or function(o)
       local handle = ffi.new(oop.get_type(o))
-      return oop.take(o, handle, type(o.m_dtor) == "function")
+      return oop.take(o, handle, o.m_dtor ~= nil)
     end,
     __metatable = false,
   })
@@ -32,7 +32,7 @@ end
 function oop.def_ctor(init_table)
   return function(o)
     local handle = ffi.new(oop.get_type(o), init_table)
-    return oop.take(o, handle, type(o.m_dtor) == "function")
+    return oop.take(o, handle, o.m_dtor ~= nil)
   end
 end
 
@@ -121,7 +121,7 @@ end
 function oop.make_readonly(tbl)
   return setmetatable({}, {
     __index = tbl,
-    __newindex = function(o, k, v)
+    __newindex = function(_, _, _)
       error("Attempt to modify read-only structure!")
     end,
     __metatable = false,
