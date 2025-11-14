@@ -51,4 +51,31 @@ function util.flatten_array2(array2)
   return n_u, n_v, result
 end
 
+---
+---@generic T
+---@param array ffi_util.array.Array<T>
+---@param index? integer
+---@return integer?
+---@return T?
+local function array_iter(array, index)
+  index = index + 1
+  if index and index <= array:upper() then
+    return index, array:value(index)
+  end
+end
+
+---
+---@generic T
+---@param array T[]|ffi_util.array.Array<T>
+---@return fun(table: T[], i?: integer):integer, T
+---@return T[]
+---@return integer
+function util.iter(array)
+  if util.is_array1(array) then
+    return ipairs(array)
+  else
+    return array_iter, array, array:lower() - 1
+  end
+end
+
 return require("ffi_util.oop").make_readonly(util)
